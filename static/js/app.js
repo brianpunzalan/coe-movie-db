@@ -23,7 +23,7 @@ $(function() {
     function setEventHandlers(config){
     	
         console.log('setting event handlers..')
-    	
+    	loadNowShowing();
         function clearActive(){
             $(".navbar-nav > .active").removeClass('active');
         }
@@ -81,34 +81,63 @@ $(function() {
     		query: query
     	};
         var searchResponse = function(response){ 
-            displayMovies(response); 
+            displayMovies(response, "Search &quot;"+query+"&quot; : "+response.total_results+" results found."); 
         }; // pass data response to displayMovie function to display Movies in the page.
 
         // get request for searching movies (JSON object)
     	$.get(searchUrl, searchParams, searchResponse);
     }
 
-    function displayMovies(data){
+    function displayMovies(data,category){
         $('.movie-list').html('');
         console.log('displaying movies..');
         console.log('\n\n\n')
         if(data.results.length > 0){
+            var headerStr = [
+                            '<div class="col-lg-12">',
+                                '<h1 class="page-header">'+category+'</h1>',
+                            '</div>'
+                        ];
+            $('.movie-list').append($(headerStr.join('')));
             data.results.forEach(function(movie){
                 var poster = config.images.base_url + config.images.poster_sizes[2] + movie.poster_path;
                 console.log(poster);
                var htmlStr = [
-                               '<li>',
-                                  '<h3>',
-                                        '<a href="#">' + movie.title +'</a>',
-                                  '</h3>',
-                                 '<a href="#">',
-                                        '<img class="img-responsive" src="' + poster + '" alt="">',
+                                '<div class="col-lg-3 col-md-4 col-xs-6 thumb">',
+                                    '<a class="thumbnail" href="#">',
+                                        '<img class="img-responsive" src="'+poster+'" alt="">',
                                     '</a>',
-                                '</li>'
-    
+                                    '<h4>',
+                                        '<a href="#">'+movie.title+'</a>',
+                                    '</h4>',
+                                '</div>'
                             ];
                 $('.movie-list').append($(htmlStr.join('')));
-           });
+            });
+        /*
+            var pagination = [
+            '<div class="row text-center">',
+                '<div class="col-lg-12">',  
+                    '<ul class="pagination">',
+                        '<li>',
+                            '<a href="#">«</a>',
+                        '</li>',
+                        '<li>',
+                            '<a href="#">»</a>',
+                        '</li>',
+                    '</ul>',
+                '</div>',
+            '</div>'
+                        ];
+            for(var i=data.total_pages; i>0 ; i--){
+                pagination.splice(5,0,
+                    '<li>',
+                        '<a href="#">'+i+'</a>',
+                    '</li>');
+            }
+
+            $('.movie-list').append($(pagination.join('')));          
+        */
         }
         else{
             var htmlStr = [
@@ -127,7 +156,7 @@ $(function() {
                 api_key:api_key
             },
             function(response){
-                displayMovies(response);
+                displayMovies(response,"Now Showing");
             }
         );
     }
@@ -139,7 +168,7 @@ $(function() {
                 api_key:api_key
             },
             function(response){
-                displayMovies(response);
+                displayMovies(response, "Upcoming");
             }
         );   
     }
@@ -151,7 +180,7 @@ $(function() {
                 api_key:api_key
             },
             function(response){
-                displayMovies(response);
+                displayMovies(response, "Popular");
             }
         );
     }
@@ -163,7 +192,7 @@ $(function() {
                 api_key:api_key
             },
             function(response){
-                displayMovies(response);
+                displayMovies(response, "Top Rated");
             }
         );
     }
