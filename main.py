@@ -26,6 +26,7 @@ class MoviewViewHandler(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('templates/movie-view.html')
         self.response.write(template.render(values))
 
+
 application = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/movie/(.*)', MoviewViewHandler),

@@ -31,6 +31,8 @@
         // fetching DOM of search form for handling event query when submitted.
         $('#form-search').submit(function(){
             searchMovie($('#search-query').val());    // passing query to searchMovie function.
+            $(".movie-view").hide();
+            $(".movie-list").show();
             return false;                             // return false after searchMovie, to search movies without loading the webpage.     
         });
 
@@ -95,7 +97,7 @@
         // get request for searching movies (JSON object)
         $.get(searchUrl, searchParams, searchResponse);
     }
-
+    
     function displayMovies(data,category){
         $('.movie-list').html('');
         console.log('displaying movies..');
@@ -109,18 +111,22 @@
             $('.movie-list').append($(headerStr.join('')));
             data.results.forEach(function(movie){
                 var poster = config.images.base_url + config.images.poster_sizes[2] + movie.poster_path;
-                //console.log(poster);
-               var htmlStr = [
-                                '<div class="col-lg-3 col-md-4 col-xs-6 thumb">',
-                                    '<a class="thumbnail" href="/movie/'+movie.id+'">',
-                                        '<img class="img-responsive" src="'+poster+'" alt="">',
-                                    '</a>',
-                                    '<h4>',
-                                        '<a href="/movie/'+movie.id+'">'+movie.title+'</a>',
-                                    '</h4>',
-                                '</div>'
-                            ];
-                $('.movie-list').append($(htmlStr.join('')));
+                movie.poster = poster;
+
+                console.log(movie.poster);
+                var markup = Handlebars.compile($("#movie_block").html())(movie);
+               // var htmlStr = [
+               //                  '<div class="col-lg-3 col-md-4 col-xs-6 thumb">',
+               //                      '<a class="thumbnail" href="/movie/'+movie.id+'">',
+               //                          '<img class="img-responsive" height="200px" src="'+poster+'" alt="">',
+               //                      '</a>',
+               //                      '<center><h4 style="text-align:center; width:140px; word-wrap: break-word;">',
+               //                          '<a href="/movie/'+movie.id+'">'+movie.title+'</a>',
+               //                      '</h4></center>',
+               //                  '</div>'
+               //              ];
+               // $('.movie-list').append($(htmlStr.join('')));
+                $('.movie-list').append(markup);
             });
         /*
             var pagination = [
@@ -249,17 +255,10 @@ function movieView(id){
                                     '<a href="/movie/'+movies[i].id+'">'+movies[i].title+'</a>'+
                                 '</h5>'+
                               '</div>';
-                //allMovies += (i==movies.length-1)? '<a href="/movie/'+movies[i].id+'">'+movies[i].title+'</a>, '
-                //    : '<a href="/movie/'+movies[i].id+'">'+movies[i].title+'</a>';
+                
             }
             $("#similar").html(allMovies);
         });
 
     });
 }
-//$(document).ready(function(){
-    //$("#now_showing, #upcoming, #top_rated, #popular").click(function(){
-    //    console.log("clicked")
-
-    //});
-//});

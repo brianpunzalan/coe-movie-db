@@ -34,3 +34,20 @@ part2 : aug 29 (Friday 7pm)
 	
 
 portfolio item - startbootstrap
+
+
+module 7
+
+backdrop
+
+per 2
+
+detail
+-overview
+-tagline
+-director
+-cast(with picture)
+-backdrops
+-similar movies
+-trailer
+-poster
